@@ -177,12 +177,23 @@ function hitBomb (player, bomb)
 
     player.anims.play('turn');
 
+    window.alert("Ви програли\n"); // вивести на екран як модальне вікно
+
     gameOver = true;
+
+    location.reload(); 
+
+    
 }
 
 function hitEnemy(player, enemy) {
     this.physics.pause(); // Pause the game
     player.setTint(0xff0000); // Tint player red
     player.anims.play('turn'); // Display 'turn' animation for player
-    gameOver = true; // Set game over flag
+    window.alert("Ви програли\n"); // вивести на екран як модальне вікно
+
+    gameOver = true;
+
+    location.reload(); 
+
 }
