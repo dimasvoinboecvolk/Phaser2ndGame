@@ -41,11 +41,15 @@ function create() {
 
     platforms = this.physics.add.staticGroup();
 
-    platforms.create(400, 800, 'ground').setScale(2).refreshBody();
+    platforms.create(200, 800, 'ground').setScale(2).refreshBody();
 
     platforms.create(600, 400, 'ground');
     platforms.create(50, 250, 'ground');
     platforms.create(750, 220, 'ground');
+    platforms.create(400, 100, 'ground');
+    platforms.create(600, 700, 'ground');
+    platforms.create(800, 600, 'ground');
+    platforms.create(1100, 500, 'ground');
 
     player = this.physics.add.sprite(100, 450, 'dude');
 
@@ -136,7 +140,7 @@ function update() {
 
     if (enemy.body.touching.right || enemy.body.blocked.right) {
         enemy.setVelocityX(-100); // Move left
-        
+
     } else if (enemy.body.touching.left || enemy.body.blocked.left) {
         enemy.setVelocityX(100); // Move right
     }
