@@ -1,6 +1,6 @@
 var config = {
     type: Phaser.AUTO,
-    width: 800,
+    width: 1200,
     height: 800,
     physics: {
         default: 'arcade',
@@ -31,6 +31,7 @@ function preload() {
     this.load.image('star', 'assets/star.png');
     this.load.image('bomb', 'assets/bomb.png');
     this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
+    this.load.image('enemy', 'assets/enemy.png');
 }
 
 var platforms;
@@ -101,7 +102,16 @@ function create() {
 
     this.add.text(450, 450, 'good luck', { fontSize: '50px', fill: '#456' });
 
+    enemy = this.physics.add.sprite(600, 400, 'enemy');
+    enemy.setCollideWorldBounds(true);
+    enemy.setVelocityX(-100); // Example: enemy moves left
+    enemy.setBounce(1);
+
+    this.physics.add.collider(enemy, platforms); // Ensure enemy collides with platforms
+    this.physics.add.collider(player, enemy, hitEnemy, null, this); // Handle collision between player and enemy
 }
+
+
 
 function update() {
     if (cursors.left.isDown) {
@@ -122,6 +132,13 @@ function update() {
 
     if (cursors.up.isDown && player.body.touching.down) {
         player.setVelocityY(-330);
+    }
+
+    if (enemy.body.touching.right || enemy.body.blocked.right) {
+        enemy.setVelocityX(-100); // Move left
+        
+    } else if (enemy.body.touching.left || enemy.body.blocked.left) {
+        enemy.setVelocityX(100); // Move right
     }
 }
 
@@ -157,4 +174,11 @@ function hitBomb (player, bomb)
     player.anims.play('turn');
 
     gameOver = true;
+}
+
+function hitEnemy(player, enemy) {
+    this.physics.pause(); // Pause the game
+    player.setTint(0xff0000); // Tint player red
+    player.anims.play('turn'); // Display 'turn' animation for player
+    gameOver = true; // Set game over flag
 }
