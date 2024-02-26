@@ -1,7 +1,7 @@
 var config = {
     type: Phaser.AUTO,
-    width: 1200,
-    height: 800,
+    width: 1920,
+    height: 1080,
     physics: {
         default: 'arcade',
         arcade: {
@@ -37,7 +37,7 @@ function preload() {
 var platforms;
 
 function create() {
-    this.add.image(400, 300, 'sky');
+    this.add.image(960, 550, 'sky');
 
     platforms = this.physics.add.staticGroup();
 
@@ -50,6 +50,15 @@ function create() {
     platforms.create(600, 700, 'ground');
     platforms.create(800, 600, 'ground');
     platforms.create(1100, 500, 'ground');
+    platforms.create(650, 1000, 'ground');
+    platforms.create(1500, 850, 'ground');
+    platforms.create(1300, 700, 'ground');
+    platforms.create(1000, 600, 'ground');
+    platforms.create(1000, 500, 'ground');
+    platforms.create(500, 700, 'ground');
+    platforms.create(1700, 500, 'ground');
+    platforms.create(1400, 350, 'ground');
+    platforms.create(1100, 900, 'ground');
 
     player = this.physics.add.sprite(100, 450, 'dude');
 
@@ -82,7 +91,7 @@ function create() {
 
     stars = this.physics.add.group({
         key: 'star',
-        repeat: 16,
+        repeat: 25,
         setXY: { x: 12, y: 0, stepX: 70 }
     });
 
@@ -161,7 +170,7 @@ function collectStar(player, star) {
 
         var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
 
-        var bomb = bombs.create(x, 6, 'bomb');
+        var bomb = bombs.create(x, 36, 'bomb');
         bomb.setBounce(1);
         bomb.setCollideWorldBounds(true);
         bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
