@@ -22,6 +22,7 @@ var scoreText;
 var gameOver = false;
 var stars;
 var bombs;
+var worldWidth = 9600;
 
 var game = new Phaser.Game(config);
 
@@ -37,9 +38,31 @@ function preload() {
 var platforms;
 
 function create() {
-    this.add.image(960, 550, 'sky');
+    //  this.add.image(960, 550, 'sky');
+    this.add.tileSprite(0, 0, worldWidth, 1080, "sky").setOrigin(0, 0);
 
     platforms = this.physics.add.staticGroup();
+
+    for (var x = 0; x < worldWidth; x = x + 250) {
+        console.log(x)
+        platforms.create(x, 1080 - 120, 'ground').setOrigin(0, 0).refreshBody();
+    }
+
+
+    //створення гравця
+    player = this.physics.add.sprite(100, 450, 'dude');
+
+    player.setBounce(0.2);
+    player.setCollideWorldBounds(true);
+
+    //налаштування кмери
+    this.cameras.main.setBounds(0, 0, worldWidth, 1080);
+    this.physics.world.setBounds(0, 0, worldWidth, 1080);
+
+
+    //слідкування камери
+    this.cameras.main.startFollow(player);
+
 
     platforms.create(200, 800, 'ground').setScale(2).refreshBody();
 
@@ -60,10 +83,7 @@ function create() {
     platforms.create(1400, 350, 'ground');
     platforms.create(1100, 900, 'ground');
 
-    player = this.physics.add.sprite(100, 450, 'dude');
 
-    player.setBounce(0.2);
-    player.setCollideWorldBounds(true);
 
     this.anims.create({
         key: 'left',
@@ -127,6 +147,10 @@ function create() {
 
 
 function update() {
+
+
+    console.log(player.x)
+
     if (cursors.left.isDown) {
         player.setVelocityX(-160);
 
@@ -153,6 +177,8 @@ function update() {
     } else if (enemy.body.touching.left || enemy.body.blocked.left) {
         enemy.setVelocityX(100); // Move right
     }
+
+
 }
 
 function collectStar(player, star) {
@@ -178,8 +204,7 @@ function collectStar(player, star) {
     }
 }
 
-function hitBomb (player, bomb)
-{
+function hitBomb(player, bomb) {
     this.physics.pause();
 
     player.setTint(0xff0000);
@@ -190,9 +215,9 @@ function hitBomb (player, bomb)
 
     gameOver = true;
 
-    location.reload(); 
+    location.reload();
 
-    
+
 }
 
 function hitEnemy(player, enemy) {
@@ -203,6 +228,6 @@ function hitEnemy(player, enemy) {
 
     gameOver = true;
 
-    location.reload(); 
+    location.reload();
 
 }
