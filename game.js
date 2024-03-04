@@ -33,6 +33,10 @@ function preload() {
     this.load.image('bomb', 'assets/bomb.png');
     this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
     this.load.image('enemy', 'assets/enemy.png');
+    this.load.image('asset1', 'assets/asset1.png');
+    this.load.image('asset2', 'assets/asset2.png');
+    this.load.image('asset3', 'assets/asset3.png');
+
 }
 
 var platforms;
@@ -63,28 +67,30 @@ function create() {
     //слідкування камери
     this.cameras.main.startFollow(player);
 
+    rock = this.physics.add.staticGroup();
 
-    platforms.create(200, 800, 'ground').setScale(2).refreshBody();
-
-    platforms.create(600, 400, 'ground');
-    platforms.create(50, 250, 'ground');
-    platforms.create(750, 220, 'ground');
-    platforms.create(400, 100, 'ground');
-    platforms.create(600, 700, 'ground');
-    platforms.create(800, 600, 'ground');
-    platforms.create(1100, 500, 'ground');
-    platforms.create(650, 1000, 'ground');
-    platforms.create(1500, 850, 'ground');
-    platforms.create(1300, 700, 'ground');
-    platforms.create(1000, 600, 'ground');
-    platforms.create(1000, 500, 'ground');
-    platforms.create(500, 700, 'ground');
-    platforms.create(1700, 500, 'ground');
-    platforms.create(1400, 350, 'ground');
-    platforms.create(1100, 900, 'ground');
+    for (var x = 0; x < worldWidth; x = x + Phaser.Math.FloatBetween(0, 700)) {
+        var y = Phaser.Math.FloatBetween(1225, 1225)
+        rock.create(x, y, 'asset1').setOrigin(1, 3).refreshBody();
+    }
 
 
+      for (var x = 0; x < worldWidth; x = x + Phaser.Math.FloatBetween(0, 700)) {
+        var y = Phaser.Math.FloatBetween(1225, 1225)
+        rock.create(x, y, 'asset2').setOrigin(1, 3).refreshBody();
+    }
 
+    for (var x = 0; x < worldWidth; x = x + Phaser.Math.FloatBetween(0, 700)) {
+        var y = Phaser.Math.FloatBetween(1225, 1225)
+        rock.create(x, y, 'asset3').setOrigin(1, 3).refreshBody();
+    }
+
+    //рандомне розміщення платформ
+    for (var x = 0; x < worldWidth; x = x + Phaser.Math.FloatBetween(0, 700)) {
+        var y = Phaser.Math.FloatBetween(400, 1000)
+        platforms.create(x, y, 'ground').setOrigin(1, 3).refreshBody();
+    }
+   
     this.anims.create({
         key: 'left',
         frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
