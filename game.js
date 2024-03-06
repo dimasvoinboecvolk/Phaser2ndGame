@@ -2,6 +2,8 @@ var config = {
     type: Phaser.AUTO,
     width: 1920,
     height: 1080,
+    parent: game,
+    playerSpeed: 600,
     physics: {
         default: 'arcade',
         arcade: {
@@ -37,13 +39,23 @@ function preload() {
     this.load.image('asset2', 'assets/asset2.png');
     this.load.image('asset3', 'assets/asset3.png');
 
+    //повітряні платформи
+    this.load.image('skyGroundStart', 'assets/14.png');
+    this.load.image('skyGround', 'assets/15.png');
+    this.load.image('skyGroundEnd', 'assets/16.png');
 }
+
+
+
 
 var platforms;
 
 function create() {
     //  this.add.image(960, 550, 'sky');
-    this.add.tileSprite(0, 0, worldWidth, 1080, "sky").setOrigin(0, 0);
+    this.add.tileSprite(0, 0, worldWidth, 1080, "sky")
+        .setOrigin(0, 0)
+        .setDepth(0);
+
 
     platforms = this.physics.add.staticGroup();
 
@@ -56,8 +68,10 @@ function create() {
     //створення гравця
     player = this.physics.add.sprite(100, 450, 'dude');
 
-    player.setBounce(0.2);
-    player.setCollideWorldBounds(true);
+    player
+        .setBounce(0.2)
+        .setDepth(5)
+        .setCollideWorldBounds(true);
 
     //налаштування кмери
     this.cameras.main.setBounds(0, 0, worldWidth, 1080);
@@ -69,27 +83,55 @@ function create() {
 
     rock = this.physics.add.staticGroup();
 
-    for (var x = 0; x < worldWidth; x = x + Phaser.Math.FloatBetween(0, 700)) {
-        var y = Phaser.Math.FloatBetween(1225, 1225)
-        rock.create(x, y, 'asset1').setOrigin(1, 3).refreshBody();
+    for (var x = 0; x < worldWidth; x = x + Phaser.Math.FloatBetween(300, 500)) {
+    
+        rock.create(x, 1080 - 128, 'asset1')
+        .setOrigin(0, 0.8)
+        .setScale(Phaser.Math.FloatBetween(0.3, 0.6))
+        .setDepth(Phaser.Math.Between(1,10));
+
     }
 
+    for (var x = 0; x < worldWidth; x = x + Phaser.Math.FloatBetween(100, 200)) {
+    
+        rock.create(x, 1080 - 128, 'asset2')
+        .setOrigin(0, 0.8)
+        .setScale(Phaser.Math.FloatBetween(0.3, 0.6))
+        .setDepth(Phaser.Math.Between(1,10));
 
-      for (var x = 0; x < worldWidth; x = x + Phaser.Math.FloatBetween(0, 700)) {
-        var y = Phaser.Math.FloatBetween(1225, 1225)
-        rock.create(x, y, 'asset2').setOrigin(1, 3).refreshBody();
     }
 
-    for (var x = 0; x < worldWidth; x = x + Phaser.Math.FloatBetween(0, 700)) {
-        var y = Phaser.Math.FloatBetween(1225, 1225)
-        rock.create(x, y, 'asset3').setOrigin(1, 3).refreshBody();
+    
+    for (var x = 0; x < worldWidth; x = x + Phaser.Math.FloatBetween(400, 700)) {
+    
+        rock.create(x, 1080 - 128, 'asset3')
+        .setOrigin(0, 0.8)
+        .setScale(Phaser.Math.FloatBetween(0.3, 0.6))
+        .setDepth(Phaser.Math.Between(1,10));
+
     }
+
 
     //рандомне розміщення платформ
-    for (var x = 0; x < worldWidth; x = x + Phaser.Math.FloatBetween(0, 700)) {
-        var y = Phaser.Math.FloatBetween(400, 1000)
-        platforms.create(x, y, 'ground').setOrigin(1, 3).refreshBody();
+    for (var x = 0; x < worldWidth; x = x + 650) {
+        var y = Phaser.Math.FloatBetween(300, 700)
+        // ліво
+        platforms.create(x, y, 'skyGroundStart')
+        .setOrigin(0, 0)
+        .refreshBody();
+ // центр
+        platforms.create(x + 128, y , 'skyGround')
+        .setOrigin(0, 0)
+        .refreshBody();
+// право
+        platforms.create(x + 128*2, y, 'skyGroundEnd')
+        .setOrigin(0, 0)
+        .refreshBody();
+
+       // Bigplatforms.create(x, 1080 - 50, 'BigP').setOrigin(0, 0).refreshBody();
     }
+
+  
    
     this.anims.create({
         key: 'left',
@@ -154,16 +196,15 @@ function create() {
 
 function update() {
 
-
     console.log(player.x)
 
     if (cursors.left.isDown) {
-        player.setVelocityX(-160);
+        player.setVelocityX(-config.playerSpeed);
 
         player.anims.play('left', true);
     }
     else if (cursors.right.isDown) {
-        player.setVelocityX(160);
+        player.setVelocityX(config.playerSpeed);
 
         player.anims.play('right', true);
     }
@@ -185,6 +226,7 @@ function update() {
     }
 
 
+
 }
 
 function collectStar(player, star) {
@@ -202,10 +244,12 @@ function collectStar(player, star) {
 
         var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
 
+        
         var bomb = bombs.create(x, 36, 'bomb');
         bomb.setBounce(1);
         bomb.setCollideWorldBounds(true);
         bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
+        
 
     }
 }
