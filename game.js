@@ -40,7 +40,7 @@ function preload() {
     this.load.image('asset1', 'assets/asset1.png');
     this.load.image('asset2', 'assets/asset2.png');
     this.load.image('asset3', 'assets/asset3.png');
-    this.load.image('healthPack', 'assets\heart-outline-filled.png');
+    this.load.image('heart', 'assets\heart-outline-filled.png');
 
     //повітряні платформи
     this.load.image('skyGroundStart', 'assets/14.png');
@@ -84,6 +84,21 @@ function create() {
     //налаштування кмери
     this.cameras.main.setBounds(0, 0, worldWidth, 1080);
     this.physics.world.setBounds(0, 0, worldWidth, 1080);
+
+    //livespacks
+    hearts = this.physics.add.group({
+        key: 'heart',
+        repeat: 5, // Adjust the number of hearts as needed
+        setXY: { x: 12, y: 0, stepX: 200 } // Adjust the initial position and spacing
+    });
+
+    hearts.children.iterate(function (child) {
+        child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8)); // Set random bounce for each heart
+    });
+
+    this.physics.add.collider(hearts, platforms); // Ensure hearts collide with platforms
+
+    this.physics.add.overlap(player, hearts, collectHeart, null, this); // Handle overlap with player
 
 
     //слідкування камери
@@ -291,4 +306,15 @@ function hitEnemy(player, enemy) {
     } else {
         // Reset player position or perform other actions
     }
+}
+
+function collectHeart(player, heart) {
+    heart.disableBody(true, true); // Remove the heart from the game
+
+    // Restore player's health or apply healing logic here
+
+    // Example: Increase player's health by 1 (adjust as needed)
+    player.health += 1;
+
+    // Update the UI or perform other actions to reflect the change in player's health
 }
