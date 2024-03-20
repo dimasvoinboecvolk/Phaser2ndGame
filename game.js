@@ -25,8 +25,11 @@ var gameOver = false;
 var stars;
 var bombs;
 var worldWidth = 9600;
-var lives = 3;
-var livesText;
+var live = 3;
+var life = 3;
+var lifeText;
+var lifeLine;
+
 
 var game = new Phaser.Game(config);
 
@@ -37,10 +40,11 @@ function preload() {
     this.load.image('bomb', 'assets/bomb.png');
     this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
     this.load.image('enemy', 'assets/enemy.png');
+    this.load.image('enemy2', 'assets/enemy.png');
     this.load.image('asset1', 'assets/asset1.png');
     this.load.image('asset2', 'assets/asset2.png');
     this.load.image('asset3', 'assets/asset3.png');
-    this.load.image('heart', 'assets\heart-outline-filled.png');
+    this.load.image('heart', 'assets/heart.png');
 
     //повітряні платформи
     this.load.image('skyGroundStart', 'assets/14.png');
@@ -71,7 +75,12 @@ function create() {
     scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#fff' });
 
 
-    livesText = this.add.text(16, 50, 'Lives: ' + lives, { fontSize: '32px', fill: '#fff' });
+    lifeText = this.add.text(1500, 100, showLife(), { fontSize: '40px', fill: '#FFF' })
+        .setOrigin(0, 0)
+        .setScrollFactor(0)
+
+
+
 
     //створення гравця
     player = this.physics.add.sprite(100, 450, 'dude');
@@ -110,7 +119,7 @@ function create() {
 
         rock.create(x, 1080 - 128, 'asset1')
             .setOrigin(0, 0.8)
-            .setScale(Phaser.Math.FloatBetween(0.3, 0.6))
+            .setScale(Phaser.Math.FloatBetween(0.3, 0.9))
             .setDepth(Phaser.Math.Between(1, 10));
 
     }
@@ -119,7 +128,7 @@ function create() {
 
         rock.create(x, 1080 - 128, 'asset2')
             .setOrigin(0, 0.8)
-            .setScale(Phaser.Math.FloatBetween(0.3, 0.6))
+            .setScale(Phaser.Math.FloatBetween(0.3, 0.9))
             .setDepth(Phaser.Math.Between(1, 10));
 
     }
@@ -129,7 +138,7 @@ function create() {
 
         rock.create(x, 1080 - 128, 'asset3')
             .setOrigin(0, 0.8)
-            .setScale(Phaser.Math.FloatBetween(0.3, 0.6))
+            .setScale(Phaser.Math.FloatBetween(0.3, 0.9))
             .setDepth(Phaser.Math.Between(1, 10));
 
     }
@@ -211,6 +220,8 @@ function create() {
 
     this.physics.add.collider(enemy, platforms); // Ensure enemy collides with platforms
     this.physics.add.collider(player, enemy, hitEnemy, null, this); // Handle collision between player and enemy
+
+
 }
 
 
@@ -271,16 +282,13 @@ function collectStar(player, star) {
 
 
 function hitBomb(player, bomb) {
-
+    if (live == 1) this.physics.pause();
 
     player.setTint(0xff0000);
+    live -= 1
+    liveText.setText(showLive());
 
-    player.anims.play('turn');
-
-    lives--; // Decrement lives
-    livesText.setText('Lives: ' + lives); // Update lives text
-
-    if (lives === 0) {
+    if (life === 0) {
         gameOver = true;
         window.alert("Ви програли\n"); // Display game over message
 
@@ -295,10 +303,10 @@ function hitEnemy(player, enemy) {
     player.setTint(0xff0000); // Tint player red
     player.anims.play('turn'); // Display 'turn' animation for player
 
-    lives--; // Decrement lives
-    livesText.setText('Lives: ' + lives); // Update lives text
+    life--; // Decrement lives
+    lifeLine.setText('life: ' + showLife()); // Update lives text
 
-    if (lives === 0) {
+    if (life === 0) {
         gameOver = true;
         window.alert("Ви програли\n"); // Display game over message
 
@@ -307,6 +315,7 @@ function hitEnemy(player, enemy) {
         // Reset player position or perform other actions
     }
 }
+
 
 function collectHeart(player, heart) {
     heart.disableBody(true, true); // Remove the heart from the game
@@ -318,3 +327,23 @@ function collectHeart(player, heart) {
 
     // Update the UI or perform other actions to reflect the change in player's health
 }
+
+
+//формування смуги життя
+function showLife() {
+    var lifeLine = ''
+    for (var i = 0; i < life; i++) {
+        lifeLine = lifeLine + '💖'
+    }
+    return lifeLine
+}
+
+//відпрацьовування колізії
+function hitHeart(player, heart) {
+    heart.disableBody(true, true);
+    life += 1
+    lifeText.setText(showLife())
+    if (life > 10) life = 10;
+
+}
+
