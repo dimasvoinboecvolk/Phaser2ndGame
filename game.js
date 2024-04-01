@@ -29,6 +29,7 @@ var live = 3;
 var life = 3;
 var lifeText;
 var lifeLine;
+var textLine;
 
 
 var game = new Phaser.Game(config);
@@ -45,6 +46,8 @@ function preload() {
     this.load.image('asset2', 'assets/asset2.png');
     this.load.image('asset3', 'assets/asset3.png');
     this.load.image('heart', 'assets/heart.png');
+    this.load.image('spike', 'assets/spike.png');
+    
 
     //повітряні платформи
     this.load.image('skyGroundStart', 'assets/14.png');
@@ -80,6 +83,7 @@ function create() {
         .setScrollFactor(0)
 
 
+        
 
 
     //створення гравця
@@ -94,22 +98,7 @@ function create() {
     this.cameras.main.setBounds(0, 0, worldWidth, 1080);
     this.physics.world.setBounds(0, 0, worldWidth, 1080);
 
-    //livespacks
-    hearts = this.physics.add.group({
-        key: 'heart',
-        repeat: 5, // Adjust the number of hearts as needed
-        setXY: { x: 12, y: 0, stepX: 200 } // Adjust the initial position and spacing
-    });
-
-    hearts.children.iterate(function (child) {
-        child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8)); // Set random bounce for each heart
-    });
-
-    this.physics.add.collider(hearts, platforms); // Ensure hearts collide with platforms
-
-    this.physics.add.overlap(player, hearts, collectHeart, null, this); // Handle overlap with player
-
-
+   
     //слідкування камери
     this.cameras.main.startFollow(player);
 
@@ -216,12 +205,9 @@ function create() {
     enemy = this.physics.add.sprite(600, 400, 'enemy');
     enemy.setCollideWorldBounds(true);
     enemy.setVelocityX(-100); // Example: enemy moves left
-    enemy.setBounce(1);
-
+    
     this.physics.add.collider(enemy, platforms); // Ensure enemy collides with platforms
-    this.physics.add.collider(player, enemy, hitEnemy, null, this); // Handle collision between player and enemy
-
-
+    this.physics.add.collider(player, enemy, hitEnemy, null, this)
 }
 
 
@@ -259,6 +245,8 @@ function update() {
 
 
 
+
+
 }
 
 var firstStarCollected = false; // Flag to track if the first star is collected
@@ -286,15 +274,9 @@ function hitBomb(player, bomb) {
 
     player.setTint(0xff0000);
     live -= 1
-    liveText.setText(showLive());
-
     if (life === 0) {
         gameOver = true;
-        window.alert("Ви програли\n"); // Display game over message
-
-        location.reload(); // Reload the game
-    } else {
-        // Reset player position or perform other actions
+        
     }
 }
 
@@ -304,16 +286,10 @@ function hitEnemy(player, enemy) {
     player.anims.play('turn'); // Display 'turn' animation for player
 
     life--; // Decrement lives
-    lifeLine.setText('life: ' + showLife()); // Update lives text
-
     if (life === 0) {
         gameOver = true;
-        window.alert("Ви програли\n"); // Display game over message
-
-        location.reload(); // Reload the game
-    } else {
-        // Reset player position or perform other actions
-    }
+       
+}
 }
 
 
@@ -331,11 +307,11 @@ function collectHeart(player, heart) {
 
 //формування смуги життя
 function showLife() {
-    var lifeLine = ''
+    var textLine = ''
     for (var i = 0; i < life; i++) {
-        lifeLine = lifeLine + '💖'
+        textLine = textLine + '💖'
     }
-    return lifeLine
+    return textLine
 }
 
 //відпрацьовування колізії
@@ -346,4 +322,6 @@ function hitHeart(player, heart) {
     if (life > 10) life = 10;
 
 }
+
+
 
